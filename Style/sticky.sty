@@ -1,0 +1,109 @@
+% !TeX encoding = UTF-8
+% !TeX root = ...
+
+\NeedsTeXFormat{LaTeX2e}[2020/01/01]
+\ProvidesExplPackage
+  {Style/Presentation/sticky}
+  {2021/09/20}
+  {0.2}
+  {Stickies for MDB}
+
+\SetDefaultHookLabel{MDB}
+\ExplSyntaxOff
+
+\RequirePackage{iftex}
+
+\ifPDFTeX
+  \relax
+\else
+  \RequirePackage{fontspec}  
+  \IfFontExistsTF {NoteWorthy} {
+    \newfontfamily {\MDBFontSticky} {NoteWorthy}
+  } {
+    \let \MDBFontSticky \relax
+  }
+  \DeclareTextFontCommand{ \MDBTextSticky }{ \MDBFontSticky }
+
+  \RequirePackage{Style/Presentation/palette}
+  \definecolor{MDBColorStickyBG}{RGB}{242,226,149}
+
+  \RequirePackage{Style/Presentation/loadtikz}
+  \usetikzlibrary{shadows}
+  \tikzset{
+    MDB sticky/.style={
+      fill=MDBColorStickyBG,
+      blur shadow={
+        shadow xshift=1.25pt,
+        shadow yshift=-2pt,
+        shadow scale=1.01,
+        shadow opacity=15,
+        shadow blur extra rounding,
+      },
+      rotate=2,
+      font=\MDBFontSticky,
+      inner sep=0.5\baselineskip,
+    },
+  }
+
+\NewDocumentCommand \MDBSticky {O{}r()mO{}m} {
+  \begin{tikzpicture} [
+    remember picture,
+    overlay,
+    my1/.style={
+      draw=none,
+      #1
+    },
+    my1a/.style={
+      rotate=3,
+      inner sep=0.5\baselineskip,
+      font=\MDBFontSticky,
+      my1
+    },
+    my4/.style={
+      anchor=center,
+      #4
+    },
+    my shadow/.style={
+      blur shadow={
+        shadow xshift=1.25pt,
+        shadow yshift=-2pt,
+        shadow opacity=15,
+        shadow blur extra rounding,
+      },
+    },
+  ] \node [ opacity=0, my1a ] (C) at (#2) [ my4 ] {\parbox{#3}{#5}};
+    \coordinate (N) at (C.north);
+    \coordinate (NE) at (C.north east);
+    \coordinate (SE) at (C.south east);
+    \coordinate (S) at (C.south);
+    \coordinate (SW) at (C.south west);
+    \coordinate (NW) at (C.north west);
+    
+    \coordinate (pSE) at (barycentric cs:SE=1.025,NE=-.025);
+    \coordinate (pSW) at (barycentric cs:SW=1.025,NW=-.025);
+    \coordinate (pNE) at (barycentric cs:NE=1.025,SE=-.025);
+    \coordinate (pNW) at (barycentric cs:NW=1.025,SW=-.025);
+    \coordinate (pS) at (barycentric cs:pSE=1,pSW=1);
+    \coordinate (cSE) at (barycentric cs:pSW=1,pSE=2);
+    \coordinate (cSW) at (barycentric cs:pSW=2,pSE=1);
+    \coordinate (cNE) at (barycentric cs:NW=1,NE=2);
+    \coordinate (cNW) at (barycentric cs:NW=2,NE=1);
+    
+    \coordinate (SWs) at (barycentric cs:SW=1.015,SE=-.015,pS=.5,S=-.5);
+    \coordinate (SEs) at (barycentric cs:SE=1.015,SW=-.015,pS=.5,S=-.5);
+    
+    \coordinate (pNEs) at (barycentric cs:pNE=1.015,pNW=-.015,pS=.5,S=-.5);
+    \coordinate (pNWs) at (barycentric cs:pNW=1.015,pNE=-.015,pS=.5,S=-.5);
+    
+    \draw [ fill=none, my shadow, my1]
+      (SWs) .. controls (cSW) .. (pS) .. controls (cSE) .. (SEs) --
+      (pNEs) .. controls (cNE) .. (N) .. controls (cNW) .. (pNWs) --cycle;
+    \draw [ fill=MDBColorStickyBG, my1 ]
+      (SW) .. controls (cSW) .. (pS) .. controls (cSE) .. (SE) --
+      (pNE) .. controls (cNE) .. (N) .. controls (cNW) .. (pNW) --cycle;
+    \node [ my1a ] at (C) [ my4 ] {\parbox{#3}{#5}};
+  \end{tikzpicture}
+}
+
+\fi
+
