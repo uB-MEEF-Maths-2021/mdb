@@ -1,0 +1,34 @@
+% !TEX encoding = UTF-8
+% !TEX program = lualatex
+
+\documentclass{article}
+
+\RequirePackage {../../Style/MathDataBase}
+
+\MDBSetup{
+  path = \CurrentFilePath,
+  language = fr,
+}
+\begin{document}
+\MDBPropRead{./Logique/content.tex}
+\end{document}
+\noindent X\MDBLanguage
+\ExplSyntaxOn
++\seq_map_inline:Nn \l_file_search_path_seq {
++#1+
+%\file_if_exist:nTF {#1/Logique/content.tex} {
+  \file_get:nnNTF {#1/./Logique/content.tex} {} \myFoo {
+    YES
+  } { ARGH }
+%} { NO }
+\par\noindent
+} +
+\ExplSyntaxOff
+\par\noindent
+A\MDBPropRead{./content.tex}
+YA Y\par\noindent
+\MDBPropItem{k}\MDBPropItem{k}\MDBPropItem{content}
+Z
+\MDBContentMapInline {#1}
+X
+\end{document}
