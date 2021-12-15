@@ -1,34 +1,5 @@
 % !TEX encoding = UTF-8
 % !TEX program = lualatex
 
-\NewDocumentCommand\MDBCategory{}{Dérivée}
-\documentclass{article}
-\RequirePackage {../../Style/MathDataBase}
-\RequirePackage{tcolorbox}
-\MDBSetup{
-  path = \CurrentFilePath,
-  language = fr,
-}
-\title{MathDataBase\\fr\\\MDBCategory}
-\begin{document}
-\maketitle
-\section{Content}
-\MDBCategoryRead{\MDBCategory}
-\MDBContentForEach {%
-  \subsection{#1}
-  \MDBContentRead{#1}
-  \MDBVariantForEach {
-    \subsubsection{Variant ##1}
-    \MDBVariantRead{##1}
-    \begin{tcolorbox}[
-      title={\ttfamily\string\MDB\{\MDBCategory/#1/##1/value\}}
-    ]
-    \MDBItem!{value}
-    \tcbsubtitle{Auteurs}
-    \MDBItem!{authors}
-    \end{tcolorbox}
-  }
-}
-\section{Authors}
-
-\end{document}
+\newcommand\MDBCategory{Dérivée}
+\input{../../Style/CategoryReadme}

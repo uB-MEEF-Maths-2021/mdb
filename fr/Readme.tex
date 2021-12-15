@@ -1,7 +1,7 @@
 % !TEX encoding = UTF-8
 % !TEX program = lualatex
 
-\documentclass{article}
+\documentclass{report}
 \RequirePackage {../Style/MathDataBase}
 \RequirePackage{tcolorbox}
 \MDBSetup{
@@ -11,28 +11,25 @@
 \title{MathDataBase\\fr}
 \begin{document}
 \maketitle
-\section{Content}
 \MDBCategoryForEach {
-\subsection{#1}
+\chapter{#1}
   \MDBCategoryRead{#1}
   \MDBContentForEach {%
-    \subsubsection{##1}
+    \section{##1}
     \MDBContentRead{##1}
     \MDBVariantForEach {
-      \paragraph{Variant ####1}{\ }\newline
+      \subsection{Variant ####1}{\ }\newline
       \MDBVariantRead{####1}
       \begin{tcolorbox}[
         title={\ttfamily\string\MDB\{#1/##1/####1/value\}}
       ]
       \MDBItem!{value}
-      \tcbsubtitle{Other}
-      \MDB{#1/##1/####1/value}
       \tcbsubtitle{Auteurs}
       \MDBItem!{authors}
       \end{tcolorbox}
     }
   }
 }
-\section{Authors}
+\part{Authors}
 
 \end{document}
