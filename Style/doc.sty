@@ -1,0 +1,36 @@
+% !TEX encoding = UTF-8
+% !TEX program = lualatex
+% !TEX root = ...
+
+\ProvidesExplPackage
+  {\CurrentFilePath/doc}
+  {2022/01/07}
+  {0.1}
+  {A setup package for MDB readmes}
+
+\ExplSyntaxOff
+
+% Page dimensions and layout
+\RequirePackage{geometry}
+\geometry{a4paper, hmargin={2cm,2cm}, vdivide={2cm,*,2cm},}
+
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L]{Base de données mathématiques}
+\fancyhead[C]{}
+\fancyhead[R]{\jobname}
+\fancyfoot[L]{\thepage}
+\fancyfoot[C]{}
+\fancyfoot[R]{\today}
+
+\RequirePackage{calc}
+
+\RequirePackage{polyglossia}
+\setdefaultlanguage{fr}
+
+\RequirePackage{fontspec}
+
+\RequirePackage{\CurrentFilePath/math}
+\RequirePackage{\CurrentFilePath/customize}
+
+\endinput

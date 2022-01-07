@@ -3,10 +3,10 @@
 % !TEX program = lualatex
 
 \documentclass{article}
-\RequirePackage{../../Style/MathDataBase}
+\RequirePackage{\CurrentFilePath/main}
+\RequirePackage{hyperref}
 \RequirePackage{tcolorbox}
 \MDBSetup{
-  path = \CurrentFilePath,
   language = fr,
 }
 \title{MathDataBase\\fr\\\MDBCategory}
@@ -14,6 +14,7 @@
 \maketitle
 \section{Content}
 \MDBCategoryRead{\MDBCategory}
+\MDBAuthorsReset
 \MDBContentForEach {%
   \subsection{#1}
   \MDBContentRead{#1}
@@ -21,14 +22,28 @@
     \subsubsection{Variant ##1}
     \MDBVariantRead{##1}
     \begin{tcolorbox}[
-      title={\ttfamily\string\MDB\{\MDBCategory/#1/##1/value\}}
+      title=\string\MDB\{\MDBCategory/#1/##1/value\},
+      fonttitle=\ttfamily,
     ]
     \MDBItem!{value}
     \tcbsubtitle{Auteurs}
     \MDBItem!{authors}
+    \MDBAuthorsPush{\MDBItem!{authors}}
     \end{tcolorbox}
   }
 }
 \section{Authors}
-
+\def\my{mail}
+\MDBAuthorsForEach {
+  \begin{tcolorbox}[
+    title=\string\MDBAuthorRead\{#1\},
+    fonttitle=\ttfamily,
+    fontupper=\ttfamily,
+  ]
+  \string\MDBAuthor\{first\}=\MDBAuthor{first}\\
+  \string\MDBAuthor\{last\}=\MDBAuthor{last}\\
+  \string\MDBAuthor\{mail\}=\MDBAuthor{mail}\\
+  \string\MDBAuthor\{status\}=\MDBAuthor{status}
+  \end{tcolorbox}
+}
 \end{document}
