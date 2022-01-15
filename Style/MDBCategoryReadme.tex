@@ -1,0 +1,170 @@
+% !TEX root = ...
+% !TEX encoding = UTF-8
+% !TEX program = lualatex
+
+\documentclass{article}
+\RequirePackage{makeidx}
+\makeindex
+\RequirePackage{xparse}
+\RequirePackage{polyglossia}
+\setdefaultlanguage{french}
+\RequirePackage{hyperref}
+\RequirePackage{tcolorbox}
+\RequirePackage{MathDataBase}
+\RequirePackage{unicode-math}
+\setmathfont{latinmodern-math}
+\RequirePackage{\CurrentFilePath/MDBMath}
+\MDBSetup {
+  language = fr,
+}
+\ExplSyntaxOn
+
+\ExplSyntaxOn
+\NewDocumentCommand \MDBParse { m +m } {
+  \MDB_parse:Nn #1 { #2 }
+}
+\cs_new:Npn \MDB_parse:Nn #1 #2 {
+  \group_begin:
+  \clist_clear:N \l_tmpa_clist
+  \seq_clear:N \l_tmpa_seq
+  \seq_push:Nn \l_tmpa_seq { #2 }
+  \MDB_parse:N #1
+  \tl_clear:N \l_tmpa_tl
+  \tl_set:Nn \l_tmpb_tl {}
+  \clist_map_inline:Nn \l_tmpa_clist {
+    \tl_put_right:NV \l_tmpa_tl \l_tmpb_tl
+    \tl_if_single_token:nTF { ##1 } {
+       \tl_put_right:Nn \l_tmpa_tl { $ ##1 $ }
+    } {
+       \tl_put_right:Nn \l_tmpa_tl { ##1 }
+    }
+    \tl_set:Nn \l_tmpb_tl {,}
+  }
+  \tl_to_str:n {#1{...}}: \l_tmpa_tl\\
+  \group_end:
+}
+\cs_new:Npn \MDB_parse:N #1 {
+  \bool_until_do:nn { \seq_if_empty_p:N \l_tmpa_seq } {
+    \seq_pop:NN \l_tmpa_seq \l_tmpa_tl
+    \let \MDB_scan:Nn \MDB_scan_a:Nn
+    \let \MDB_nacs:N \MDB_nacs_a:N
+    \tl_clear:N \l_tmpb_tl
+    \tl_clear:N \g_tmpb_tl
+    \tl_map_tokens:Nn \l_tmpa_tl { \MDB_scan:Nn #1 }
+    \MDB_nacs:N #1
+  }
+}
+\cs_new:Npn \MDB_scan_a:Nn #1 #2 {
+  \tl_if_single_token:nTF { #2 } {
+    \tl_if_eq:nnT { #1 } { #2 } {
+      \tl_clear:N \l_tmpb_tl
+      \let \MDB_scan:Nn \MDB_scan_b:Nn
+      \let \MDB_nacs:N \MDB_nacs_b:N
+    }
+  } {
+    \tl_if_empty:nF { #2 } {
+      \let \MDB_scan:Nn \MDB_scan_c:Nn
+      \let \MDB_nacs:N \MDB_nacs_c:N
+      \tl_set:Nn \g_tmpb_tl { #2 }
+      \tl_clear:N \l_tmpb_tl
+    }
+  }
+}
+\cs_new:Npn \MDB_nacs_a:N #1 {
+  \tl_if_empty:NTF \l_tmpb_tl {
+    \bool_set_false:N \l_tmpa_bool
+  } {
+    \tl_set_eq:NN \l_tmpa_tl \l_tmpb_tl
+  }
+}
+\cs_new:Npn \MDB_scan_b:Nn #1 #2 {
+  \tl_if_single_token:nTF { #2 } {
+    \tl_put_right:Nn \l_tmpb_tl { #2 }
+  } {
+    \tl_put_right:Nn \l_tmpb_tl { { #2 } }
+  }
+}
+\cs_new:Npn \MDB_nacs_b:N #1 {
+  \exp_last_unbraced:NV #1 \l_tmpb_tl {} \q_stop
+}
+\let \MDB_scan_c:Nn \MDB_scan_b:Nn
+\cs_new:Npn \MDB_nacs_c:N #1 {
+  \tl_if_empty:NF \l_tmpb_tl {
+    \exp_args:NNV \seq_push:Nn \l_tmpa_seq \l_tmpb_tl
+  }
+  \exp_args:NNV \seq_push:Nn \l_tmpa_seq \g_tmpb_tl
+}
+\NewDocumentCommand \MDBScanComplete { O{} m } {
+  \clist_if_in:NnF \l_tmpa_clist { #2 } {
+    \clist_put_right:Nn \l_tmpa_clist { #2 }
+  }
+  \MDB_scan_complete:n
+}
+\cs_new:Npn \MDB_scan_complete:n #1 \q_stop {
+  \seq_push:Nn \l_tmpa_seq { #1 }
+}
+\NewDocumentCommand\MDBMetaForeach { m } {
+  \group_begin:
+  \cs_set_eq:NN \MDBMeta \MDBScanComplete
+  \cs_set_eq:NN \MDBDefine \MDBScanComplete
+  \cs_set_eq:NN \MDBIndex \MDBScanComplete
+  \exp_args:NNx \MDB_parse:Nn \MDBMeta { #1 }
+  \exp_args:NNx \MDB_parse:Nn \MDBDefine { #1 }
+  \exp_args:NNx \MDB_parse:Nn \MDBIndex { #1 }
+  \vspace{-\baselineskip}
+  \group_end:
+}
+\cs_new:Npn \MDBComment {
+  \group_begin:
+  \tl_set:Nx \l_tmpa_tl { \MDBItem{comment} }
+  \tl_if_empty:NF \l_tmpa_tl {
+    \tcbsubtitle{Commentaire}
+    \l_tmpa_tl
+  }
+  \group_end:
+}
+\ExplSyntaxOff
+\title{MathDataBase --- fr\\\MDBCategory}
+\begin{document}
+\maketitle
+\section{Content}
+\MDBCategoryRead{\MDBCategory}
+\MDBAuthorsReset
+\MDBContentForEach {%
+  \subsection{#1}
+  \MDBContentRead{#1}
+  \MDBVariantForEach {
+    \subsubsection{Variant ##1}
+    \MDBVariantRead{##1}
+    \begin{tcolorbox}[
+      title=\string\MDB\{\MDBCategory/#1/##1/value\}
+      \\\MDBItem!{title},
+      fonttitle=\ttfamily,
+    ]
+    \MDBItem!{value}
+    \tcbsubtitle{Informations}
+    \ttfamily
+    \setmathfont{latinmodern-mono}[range=it]
+    Auteurs=\MDBCList{authors}
+    \MDBAuthorsPush{\MDBItem{authors}}\\
+    \MDBMetaForeach { \MDBItem!{value} }
+    \MDBComment
+    \end{tcolorbox}
+  }
+}
+\section{Authors}
+\def\my{mail}
+\MDBAuthorsForEach {
+  \begin{tcolorbox}[
+    title=\string\MDBAuthorRead\{#1\},
+    fonttitle=\ttfamily,
+    fontupper=\ttfamily,
+  ]
+  \string\MDBAuthor\{first\}=\MDBAuthor{first}\\
+  \string\MDBAuthor\{last\}=\MDBAuthor{last}\\
+  \string\MDBAuthor\{mail\}=\MDBAuthor{mail}\\
+  \string\MDBAuthor\{status\}=\MDBAuthor{status}
+  \end{tcolorbox}
+}
+\printindex
+\end{document}

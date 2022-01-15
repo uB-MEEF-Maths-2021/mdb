@@ -3,7 +3,7 @@
 % !TEX root = ...
 
 \ProvidesExplPackage
-  {\CurrentFilePath/main}
+  {MathDataBase}
   {2022/01/07}
   {0.2}
   {MathDataBase main package}
@@ -152,10 +152,10 @@ end
   \ignorespaces
 }
 
-\NewExpandableDocumentCommand \MDB { m } {
+\NewExpandableDocumentCommand \MDB { O{} m } {
   \group_begin:
   \exp_args:Nnx
-  \regex_split:nnNTF { \s*/\s* } { #1 } \l_tmpa_seq {
+  \regex_split:nnNTF { \s*/\s* } { #2 } \l_tmpa_seq {
     \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 1 }
     \tl_if_eq:NNF \MDBCategory \l_tmpa_tl {
       \exp_args:NV \MDBCategoryRead \l_tmpa_tl
@@ -177,16 +177,17 @@ end
     }
     \exp_args:NNV
     \prop_get:NnNTF \g_MDB_variant_prop \l_tmpa_tl \l_tmpa_tl {
+      \prop_gset_from_keyval:Nn \g_MDBMeta_prop { #1 }
       \tl_trim_spaces:N \l_tmpa_tl
       \exp_args:NV
       \group_end:
       \l_tmpa_tl
     } {
-      \PackageError{MathDataBase}{Unknown~value~path:~#1}
+      \PackageError{MathDataBase}{Unknown~value~path:~#2}
       \group_end:
     }
   } {
-    \PackageError{MathDataBase}{Bad~value~path:~#1}
+    \PackageError{MathDataBase}{Bad~value~path:~#2}
     \group_end:
   }
 }
@@ -237,9 +238,16 @@ end
   \prop_item:Nn \g_MDB_variant_prop { #2 }
 }
 
-\ProvideDocumentCommand \MDBMeta { O{} m } { #2 }
+\prop_new:N \g_MDBMeta_prop
+\ProvideDocumentCommand \MDBMeta { O{} m } {
+  \prop_if_in:NnTF \g_MDBMeta_prop { #2 } {
+    \prop_item:Nn \g_MDBMeta_prop { #2 }
+  } {
+    #2
+  }
+}
 \ProvideDocumentCommand \MDBDefine { O{} m } { #2 }
-\ProvideDocumentCommand \MDBIndex { O{} m } { #2 }
+\ProvideDocumentCommand \MDBIndex { O{} m } { \index{#2} }
 
 \prop_new:N \l_MDB_author_prop
 \prop_new:N \g_MDB_author_unknown_prop
@@ -271,13 +279,30 @@ end
 \NewDocumentCommand \MDBAuthorsReset {} {
   \clist_gclear:N \g_MDB_authors_clist
 }
-\NewDocumentCommand \MDBAuthorsPush { m } {
-  \exp_args:Nx \clist_map_inline:nn { #1 } {
+\NewExpandableDocumentCommand \MDBAuthorsPush { m } {
+  \group_begin:
+  \tl_set:Nx \l_tmpa_tl { #1 }
+  \exp_args:NV \clist_map_inline:nn \l_tmpa_tl {
     \clist_if_in:NnF \g_MDB_authors_clist { ##1 } {
       \clist_gput_right:Nn \g_MDB_authors_clist { ##1 }
     }
   }
+  \group_end:
 }
+\NewExpandableDocumentCommand \MDBCList { t! m } {
+  \group_begin:
+  \IfBooleanTF { #1 } {
+    \tl_set:Nx \l_tmpa_tl { \MDBItem! {#2} }
+  } {
+    \tl_set:Nx \l_tmpa_tl { \MDBItem {#2} }
+  }
+  \clist_set:NV \l_tmpa_clist \l_tmpa_tl
+  \tl_set:Nx \l_tmpb_tl { \clist_use:Nn \l_tmpa_clist , }
+  \exp_args:NV
+  \group_end:
+  \l_tmpb_tl
+}
+
 \cs_generate_variant:Nn \prop_item:Nn { Ne }
 \NewExpandableDocumentCommand \MDBAuthor { m } {
   \prop_item:Ne \l_MDB_author_prop { #1 }
