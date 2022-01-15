@@ -137,17 +137,17 @@
     \subsubsection{Variant ##1}
     \MDBVariantRead{##1}
     \begin{tcolorbox}[
-      title=\string\MDB\{\MDBCategory/#1/##1/value\}
+      title=\string\MDB\{\MDBCategory/#1/##1/text\}
       \\\MDBItem!{title},
       fonttitle=\ttfamily,
     ]
-    \MDBItem!{value}
+    \MDBItem!{text}
     \tcbsubtitle{Informations}
     \ttfamily
     \setmathfont{latinmodern-mono}[range=it]
     Auteurs=\MDBCList{authors}
     \MDBAuthorsPush{\MDBItem{authors}}\\
-    \MDBMetaForeach { \MDBItem!{value} }
+    \MDBMetaForeach { \MDBItem!{text} }
     \MDBComment
     \end{tcolorbox}
   }
