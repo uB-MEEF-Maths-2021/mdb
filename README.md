@@ -21,10 +21,11 @@ In order to use `git` on the command line, generate a
 
 Make a fork of the original `MathDataBase-fr` repository.
 
-1. sign in with your user account
-2. Goto [uB-MEEF-Maths-2021](https://github.com/uB-MEEF-Maths-2021/MathDataBase-fr)
-3. Press the **fork** button
-4. Fill the form keeping things public.
+1. Go to [GitHub](https://github.com/)
+2. sign in with your user account
+3. Goto [uB-MEEF-Maths-2021](https://github.com/uB-MEEF-Maths-2021/MathDataBase-fr)
+4. Press the **fork** button
+5. Fill the form keeping things public.
 
 This creates your personal forked repository at `https://github.com/<your user name>/MathDataBase-fr`. Then you make a local working copy of this forked repository. From this page,
 
