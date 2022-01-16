@@ -2,9 +2,11 @@
 
 ## Software requirement
 Requirements:
-`GitHub Desktop`
-`Visual Studio Code`
-Some explanations can be inaccurate because they implicitly refer to specific versions of these softwares.
+
+* **GitHub Desktop** (with english UI)
+* **Visual Studio Code**
+
+Some explanations can be slightly inaccurate because they implicitly refer to specific versions of these softwares.
 
 ## Contributions with git
 
@@ -57,8 +59,8 @@ First you have to fetch any change made by third parties.
 
 If you are asked to resolve conflicts before merge,
 
-* for binary files select **Resolve/use the modified file from `upstream/main`**
-* for text files, select **Open in visual studio code**. In each open window, navigate to each conflicting text and select one of **Accept current change**, **Accept incoming change**, **Accept both changes**, **Compare changes** or make the changes manually.
+* for binary files select **Resolve→Use the modified file from `upstream/main`**
+* for text files, select **Open in visual studio code**. In each open window, navigate to each conflicting zone and select one of **Accept current change**, **Accept incoming change**, **Accept both changes**, **Compare changes** or make the changes manually if you have enough skills.
 * Once all conflicts are resolved, click **Continue merge**
 
 Then you should push this **merge commit**.
