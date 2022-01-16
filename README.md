@@ -66,8 +66,7 @@ Then you should push this **merge commit**.
 Now you create a pull request.
 
 1. In **Github Desktop** select menu **Branch→Create pull request**
-2. Got to the **Pull requests Tab**
-3. Press the green **Create pull request** button
+2. Press the green **Create pull request** button
 
 Then some people will review your changes, and possibly integrate them into the official **MathDataBase**.
 
