@@ -47,7 +47,7 @@ you can see the actual changes that you should **commit**:
 
 Once commits are made, you **push** them to the server:
 
-5. Press the blue **Push** button
+5. Press the blue **Push origin** button
 
 ### Contribute to the original MathDataBase
 
