@@ -67,7 +67,7 @@ where you replace `<path to MathDataBase>` with the real path.
 
 ### Test
 
-Create `test.tex` with content reads
+Create `test.tex` with content
 ```
 \documentclass{article}
 \RequirePackage{MathDataBase}
