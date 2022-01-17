@@ -32,6 +32,8 @@ function MDB.directory(file_name)
 end
 \end{luacode}
 
+\RequirePackage{MDBMath}
+
 \ExplSyntaxOn
 
 \exp_args:NNx
@@ -186,45 +188,6 @@ end
     \group_end:
   }
 }
-%\NewExpandableDocumentCommand \MDB { O{} m } {
-%  \group_begin:
-%  \exp_args:Nnx
-%  \regex_split:nnNTF { \s*/\s* } { #2 } \l_tmpa_seq {
-%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 1 }
-%    \tl_if_eq:NNF \MDBCategory \l_tmpa_tl {
-%      \exp_args:NV \MDBCategoryRead \l_tmpa_tl
-%    }
-%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 2 }
-%    \tl_if_eq:NNF \MDBContent \l_tmpa_tl {
-%      \exp_args:NV \MDBContentRead \l_tmpa_tl
-%    }
-%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 3 }
-%    \tl_if_empty:NT \l_tmpa_tl {
-%      \tl_set:Nn \l_tmpa_tl { base }
-%    }
-%    \tl_if_eq:NNF \MDBVariant \l_tmpa_tl {
-%      \exp_args:NV \MDBVariantRead \l_tmpa_tl
-%    }
-%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 4 }
-%    \tl_if_empty:NT \l_tmpa_tl {
-%      \tl_set:Nn \l_tmpa_tl { value }
-%    }
-%    \exp_args:NNV
-%    \prop_get:NnNTF \g_MDB_variant_prop \l_tmpa_tl \l_tmpa_tl {
-%      \prop_gset_from_keyval:Nn \g_MDBMeta_prop { #1 }
-%      \tl_trim_spaces:N \l_tmpa_tl
-%      \exp_args:NV
-%      \group_end:
-%      \l_tmpa_tl
-%    } {
-%      \PackageError{MathDataBase}{Unknown~value~path:~#2}
-%      \group_end:
-%    }
-%  } {
-%    \PackageError{MathDataBase}{Bad~value~path:~#2}
-%    \group_end:
-%  }
-%}
 
 \prop_new:N \g_MDB_content_prop
 \prop_new:N \g_MDB_variant_prop
