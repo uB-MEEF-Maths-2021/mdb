@@ -58,8 +58,8 @@ The answer is some `<local texmf path>` which last compenent contains `texmf`.
 
 2. Issue in the terminal
 
-* Windows `mklink /d "<path to MathDataBase>/Style" "<some path>/texmf/tex/latex/MDB"`
-* Other `ln -s "<some path>/texmf/tex/latex/MDB" "<path to MathDataBase/Style>"`
+* Windows `mklink /d "<some path>/texmf/tex/latex/MDB" "<path to MathDataBase>/Style"`
+* Other `ln -s "<path to MathDataBase/Style>" "<some path>/texmf/tex/latex/MDB"`
 
 where you replace `<path to MathDataBase>` with the real path.
 
