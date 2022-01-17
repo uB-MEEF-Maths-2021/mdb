@@ -34,55 +34,50 @@ end
 
 \ExplSyntaxOn
 
-\group_begin:
-\tl_set_eq:NN \l_tmpa_tl \CurrentFilePath
-\regex_replace_once:nnN { / Style $ } { / } \l_tmpa_tl
-\exp_args:NNNV
-\group_end: \tl_set:Nn \MDBRootDir \l_tmpa_tl
-
-\tl_set:Nx \MDBStyleDir { \MDBRootDir Style / }
-
 \exp_args:NNx
 \tl_set:Nn \MDBMain {
   \luadirect{ MDB.directory( \luastring{\jobname.tex} ) }
 }
 
 \tl_set:Nn \MDBLanguage { fr }
+\tl_set:Nn \MDBRoot { .../NO ROOT PROVIDED/ }
 
 \keys_define:nn { MathDataBase } {
-  language .cs_gset:Np = \MDBLanguage,
+  path .tl_gset:N = \MDBRootDir,
+  language .tl_gset:N = \MDBLanguage,
   unknown .code:n = \PackageError { MathDataBase } {
      You~tried~to~set~unknown~key~'\l_keys_key_str'~to~'#1'.
   },
 }
-\NewDocumentCommand \MDBSetup { m } {
+\NewDocumentCommand \MDBConfigure { m } {
   \keys_set:nn { MathDataBase } { #1 }
+  \tl_set:Nx \MDBStyleDir { \MDBRootDir Style / }
+  \group_begin:
+  \file_get:nnNTF {
+    \MDBRootDir \MDBLanguage / content.tex
+  } {} \l_tmpa_tl {
+    \regex_replace_once:nnN {
+      \s+ (?: \c{ endinput } .* )? $
+    } {} \l_tmpa_tl
+    \exp_last_unbraced:NNV
+    \prop_gset_from_keyval:Nn \g_MDB_prop \l_tmpa_tl
+    \prop_get:NnN \g_MDB_prop { authors } \l_tmpa_tl
+    \tl_if_empty:NTF \l_tmpa_tl {
+      \PackageError{MathDataBase}{Missing~authors~in~\MDBRootDir/ \MDBLanguage / content.tex}
+      \group_end:
+    } {
+      \exp_args:NNNV
+      \group_end:
+      \prop_gset_from_keyval:Nn \g_MDB_authors_prop \l_tmpa_tl
+    }
+  } {
+    \PackageError{MathDataBase}{No~proper~\MDBRootDir \MDBLanguage / content.tex}
+    \group_end:
+  }
 }
+
 \prop_new:N \g_MDB_prop
 \prop_new:N \g_MDB_authors_prop
-
-\group_begin:
-\file_get:nnNTF {
-  \MDBRootDir \MDBLanguage / content.tex
-} {} \l_tmpa_tl {
-  \regex_replace_once:nnN {
-    \s+ (?: \c{ endinput } .* )? $
-  } {} \l_tmpa_tl
-  \exp_last_unbraced:NNV
-  \prop_gset_from_keyval:Nn \g_MDB_prop \l_tmpa_tl
-  \prop_get:NnN \g_MDB_prop { authors } \l_tmpa_tl
-  \tl_if_empty:NTF \l_tmpa_tl {
-    \PackageError{MathDataBase}{Missing~authors~in~\MDBRootDir \MDBLanguage / content.tex}
-    \group_end:
-  } {
-    \exp_args:NNNV
-    \group_end:
-    \prop_gset_from_keyval:Nn \g_MDB_authors_prop \l_tmpa_tl
-  }
-} {
-  \PackageError{MathDataBase}{No~proper~\MDBRootDir \MDBLanguage / content.tex}
-  \group_end:
-}
 
 \prop_new:N \g_MDB_category_prop
 \tl_new:N \MDBCategoryName
@@ -191,6 +186,45 @@ end
     \group_end:
   }
 }
+%\NewExpandableDocumentCommand \MDB { O{} m } {
+%  \group_begin:
+%  \exp_args:Nnx
+%  \regex_split:nnNTF { \s*/\s* } { #2 } \l_tmpa_seq {
+%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 1 }
+%    \tl_if_eq:NNF \MDBCategory \l_tmpa_tl {
+%      \exp_args:NV \MDBCategoryRead \l_tmpa_tl
+%    }
+%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 2 }
+%    \tl_if_eq:NNF \MDBContent \l_tmpa_tl {
+%      \exp_args:NV \MDBContentRead \l_tmpa_tl
+%    }
+%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 3 }
+%    \tl_if_empty:NT \l_tmpa_tl {
+%      \tl_set:Nn \l_tmpa_tl { base }
+%    }
+%    \tl_if_eq:NNF \MDBVariant \l_tmpa_tl {
+%      \exp_args:NV \MDBVariantRead \l_tmpa_tl
+%    }
+%    \tl_set:Nx \l_tmpa_tl { \seq_item:Nn \l_tmpa_seq 4 }
+%    \tl_if_empty:NT \l_tmpa_tl {
+%      \tl_set:Nn \l_tmpa_tl { value }
+%    }
+%    \exp_args:NNV
+%    \prop_get:NnNTF \g_MDB_variant_prop \l_tmpa_tl \l_tmpa_tl {
+%      \prop_gset_from_keyval:Nn \g_MDBMeta_prop { #1 }
+%      \tl_trim_spaces:N \l_tmpa_tl
+%      \exp_args:NV
+%      \group_end:
+%      \l_tmpa_tl
+%    } {
+%      \PackageError{MathDataBase}{Unknown~value~path:~#2}
+%      \group_end:
+%    }
+%  } {
+%    \PackageError{MathDataBase}{Bad~value~path:~#2}
+%    \group_end:
+%  }
+%}
 
 \prop_new:N \g_MDB_content_prop
 \prop_new:N \g_MDB_variant_prop
@@ -331,6 +365,6 @@ end
 
 \ExplSyntaxOff
 
-\AtBeginDocument{\MDBSetup{}}
+\AtBeginDocument{\input{MDB.cfg}}
 
 \endinput
