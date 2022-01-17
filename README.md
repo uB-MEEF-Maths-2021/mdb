@@ -45,13 +45,34 @@ kpsewhich -var-value TEXMFHOME
 ```
 The answer is some `<local texmf path>` which last compenent contains `texmf`.
 
-### Instalation
+### Installation
 
-1. locate the folder `<path to MathDataBase/Style>`.
+1. locate the **MathDataBase** folder. In the sequel `<path to MathDataBase>` designates the path to ths folder.
+
+2. Create a file named `MDB.cfg` at `<path to MathDataBase>`, which content reads
+```
+\MDBConfigure {
+  path=<path to MathDataBase>,
+}
+```
 
 2. Issue in the terminal
 
-* Windows `mklink /d "<path to MathDataBase/Style>" "<some path>/texmf/tex/latex/MDB"`
+* Windows `mklink /d "<path to MathDataBase>/Style" "<some path>/texmf/tex/latex/MDB"`
 * Other `ln -s "<some path>/texmf/tex/latex/MDB" "<path to MathDataBase/Style>"`
 
-where you replace `<path to MathDataBase/Style>` with the real path.
+where you replace `<path to MathDataBase>` with the real path.
+
+
+
+### Test
+
+Create `test.tex` with content reads
+```
+\documentclass{article}
+\RequirePackage{MathDataBase}
+\begin{document}
+\MDB{Polynômes/racine/base/text}
+\end{document}
+```
+This document should typeset properly.
