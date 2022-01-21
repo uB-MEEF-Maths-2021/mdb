@@ -63,7 +63,27 @@ The answer is some `<local texmf path>` which last compenent contains `texmf`.
 
 where you replace `<path to MathDataBase>` with the real path.
 
+On windows, basic users are not allowed to use the `mklink` command. In case of error, there are two solutions
 
+1. Open a terminal as administrator
+2. Activate the developer mode
+
+### Developer mode in windows
+
+How to enable Developer Mode in Windows 10
+
+1. Open Settings.
+2. Select the "Update & security" section
+3. Select the "For developers" section
+4. Click on the "Developer mode" button
+5. A pop-up appears, click on "Yes".
+
+How to disable Developer Mode in Windows 10?
+
+1. Open Settings.
+2. Select the "Update & security" section
+3. Select the "For developers" section
+4. Click "Don't use developer features"
 
 ### Test
 
