@@ -47,7 +47,7 @@ The answer is some `<local texmf path>` which last compenent contains `texmf`.
 
 ### Installation
 
-1. locate the **MathDataBase** folder. In the sequel `<path to MathDataBase>` designates the path to ths folder.
+1. locate the **MathDataBase** folder. In the sequel `<path to MathDataBase>` designates the path to this folder.
 
 2. Create a file named `MDB.cfg` at `<path to MathDataBase>`, which content reads
 ```
