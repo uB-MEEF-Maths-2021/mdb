@@ -72,4 +72,10 @@ Then some people will review your changes, and possibly integrate them into the 
 
 ## Advanced features
 
-Nothing yet
+### Managing more than one user
+
+To switch users in **Github Desktop**, from the preferences pane, sign out then sign in after swithing user from **Github.com** in the main browser.
+
+From the CLI, use `git config ...`
+
+### 
