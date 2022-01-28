@@ -25,7 +25,35 @@ Pour obtenir la toute dernière version de la base de données (il faut disposer
 
 Voir le guide de contributions.
 
-## Installation
+## Configuration automatique
+
+Une fois le téléchargement effectué, placer le dossier `MathDataBase` à l'endroit qui vous convient. Ouvrir un navigateur de fichiers et aller dans le dossier `MathDataBase`.
+
+### sur Windows
+
+Sélectionner le dossier `Tool` puis clic droit et choisir "Ouvrir une fenêtre PowerShell ici". Entrer et valider l'instruction
+```
+texlua configuration.lua
+```
+
+### sur MacOS
+
+Si ce n'est déjà fait, dans «Préférences système > Clavier > Raccourcis claviers > Services» cochez le service «Nouveau terminal sur dossier».
+
+Sélectionner le dossier `Tool` puis clic droit et choisir "Nouveau terminal sur dossier". Entrer et valider l'instruction
+```
+texlua configuration.lua
+```
+### Sur unix/linux
+
+Sélectionner le dossier `Tool` puis clic droit et choisir "Ouvrir un terminal ici" (ou similaire). Entrer et valider l'instruction
+```
+texlua configuration.lua
+```
+
+## Configuration technique
+
+Au cas où la configuration automatique ne fonctionne pas.
 
 ### Arborescence texmf locale
 

@@ -25,7 +25,34 @@ Obtain the last cutting edge database.
 
 See the contributing guide lines.
 
-## Install
+## Automatique configuration
+
+Once download, move the `MathDataBase` folder to the appropriate location. Open a file browser and go to the `MathDataBase` folder.
+
+### on Windows
+
+Select the `Tool` folder then right clic and choose "Open a PowerShell window here". Enter and validate next instruction
+```
+texlua configuration.lua
+```
+
+### sur MacOS
+
+If not already done, goto "System Preferences > Keyboard > Shortcuts > Services" and check the  "New Terminal at Folder" service.
+
+Select the `Tool` folder then right clic and choose "New Terminal at Folder". Enter and validate next instruction
+```
+texlua configuration.lua
+```
+
+### Sur unix/linux
+
+Select the `Tool` folder then right clic and choose "New Terminal at Folder" (or similar). Enter and validate next instruction
+```
+texlua configuration.lua
+```
+
+## Technical configuration
 
 ### Local texmf tree
 
