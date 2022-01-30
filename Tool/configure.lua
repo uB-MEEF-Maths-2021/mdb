@@ -181,7 +181,7 @@ if fs_mode(mdb_path) ~= nil then
       print("Can't remove "..mdb_path, err_msg)
       exit(err_code)
     else
-      local cmd = [[del "%s"]]
+      local cmd = [[rmdir "%s"]]
       cmd = cmd:format(mdb_path)
       if verbose then
         print("Executing: "..cmd)
