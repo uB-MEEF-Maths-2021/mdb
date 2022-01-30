@@ -11,6 +11,7 @@ local IS_UNIX  = OS_TYPE == "unix"
 local VERSION = "1.0"
 local print = print
 local exit = os.exit
+local execute = os.execute
 
 local __FILE__ = arg[0]
 
@@ -61,64 +62,13 @@ local function is_directory(path)
   return mode == "directory",err_msg,err_code
 end
 
--- Test if we can make soft links
--- create a temporary file as destination (required on windows)
-local destination = os.tmpname()
-local CONTENT = "REMOVE ME WHEN DONE"
-local fh = assert(io.open(destination,"w"))
-fh:write(CONTENT)
-fh = fh:close()
-if verbose then
-  print("Fake destination created "..destination)
+if not IS_UNIX then
+  print("Please activate the developper mode")
+  print("Press return to continue")
+  io.read()
 end
-local err_msg, err_code
-_, err_msg, err_code = fs_mode(destination)
-if err_msg ~= nil then
-  print("Soft link test: destination error", err_msg)
-  exit(err_code)
-end
-local link_name = os.tmpname()
-local yorn
-if fs_mode(link_name) then
-  if verbose then
-    print("Removing "..link_name)
-  end
-  yorn, err_msg, err_code = os.remove(link_name)
-  if not yorn then
-    print("Cannot remove "..link_name, err_msg)
-    exit(err_code)
-  end
-end
-yorn, err_msg, err_code = lfs.link(destination,link_name,true)
-if not yorn then
-  print("Soft link test: link error", err_msg)
-  if not IS_UNIX then
-    print("Sur Windows, vous devez d'abord activer le mode développeur")
-  end
-  exit(err_code)
-end
-if verbose then
-  print("Soft links available")
-end
-if fs_mode(link_name) == nil then
-  print("Soft link test: link error", err_msg)
-  if not IS_UNIX then
-    print("Sur Windows, vous devez d'abord activer le mode développeur")
-  end
-  exit(err_code)
-end
-fh = assert(io.open(link_name,"r"))
-local s = fh:read("a")
-fh:close()
-assert(s==CONTENT)
-os.remove(link_name)
-if verbose then
-  print("Removed "..link_name)
-end
-os.remove(destination)
-if verbose then
-  print("Removed "..destination)
-end
+
+
 -- Where is the local texmf
 local HOME
 if IS_UNIX then
@@ -187,6 +137,7 @@ if TEXMFHOME_ok then
 end
 -- Configure MathDataBase
 local cfg_path = TEXMFHOME_tex_latex.."/MDB.cfg"
+local yorn,err_msg,err_code
 if fs_mode(cfg_path) ~= nil then
   yorn,err_msg,err_code = os.remove(cfg_path)
   if not yorn then
@@ -197,8 +148,8 @@ end
 if verbose then
   print("Removed "..cfg_path)
 end
-fh = assert(io.open(cfg_path,"w"))
-s = [[
+local fh = assert(io.open(cfg_path,"w"))
+local s = [[
 %% MathDataBase configuration file: DO NOT EDIT
 {
   path={%s},
@@ -233,16 +184,36 @@ if fs_mode(mdb_path) ~= nil then
     print("Removed "..mdb_path)
   end
 end
-_, err_msg, err_code = lfs.link(mdb_Style, TEXMFHOME_tex_latex.."/MDB", true)
-if err_msg ~= nil then
-  print("Échec", err_msg)
-  exit(err_code)
+yorn, err_msg, err_code = lfs.link(mdb_Style, TEXMFHOME_tex_latex.."/MDB", true)
+if yorn == nil then
+  if IS_UNIX then
+    print("Échec", err_msg)
+    exit(err_code)
+  else
+    local cmd = [[mklink /D "%s" "%s"]]
+    cmd = cmd:format(mdb_path, mdb_Style)
+    if verbose then
+      print("Executing: "..cmd)
+    end
+    execute(cmd)
+  end
 end
 fh = assert(io.open(mdb_path.."/MathDataBase.sty","r"))
 s = fh:read("a")
 fh:close()
 if s:len() == 0 then
   print("Échec")
+  if not IS_UNIX then
+    s = [[
+Impossible de terminer la configuration automatique sur Windows:
+Vous devez terminer manuellement
+1) Dans PowerShell, exécuter la commande:
+    mklink /D "%s" "%s"
+2) Dans PowerShell, exécuter la commande:
+    kpsewhich MathDataBase.sty
+]]
+    print(s:format(mdb_path, mdb_Style))      
+  end
   exit(1)
 end
 if verbose then
