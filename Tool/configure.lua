@@ -52,36 +52,42 @@ if verbose then
   print(s:format(mdb_root))
 end
 
+local function fs_mode(path)
+  return lfs.attributes (path, "mode")
+end
+
 local function is_directory(path)
-  local mode,err_msg,err_code = lfs.attributes (path, "mode")
+  local mode,err_msg,err_code = fs_mode (path)
   return mode == "directory",err_msg,err_code
 end
 
 -- Test if we can make soft links
 -- create a temporary file as destination (required on windows)
 local destination = os.tmpname()
-local fh = assert(io.open(destination,"w"))
 local CONTENT = "REMOVE ME WHEN DONE"
+local fh = assert(io.open(destination,"w"))
 fh:write(CONTENT)
-fh:close()
+fh = fh:close()
 if verbose then
   print("Fake destination created "..destination)
 end
 local err_msg, err_code
-_, err_msg, err_code = lfs.attributes (destination, "mode")
+_, err_msg, err_code = fs_mode(destination)
 if err_msg ~= nil then
   print("Soft link test: destination error", err_msg)
   exit(err_code)
 end
 local link_name = os.tmpname()
-if verbose then
-  print("Removing "..link_name)
-end
 local yorn
-yorn, err_msg, err_code = os.remove(link_name)
-if not yorn then
-  print("Cannot remove "..link_name, err_msg)
-  exit(err_code)
+if fs_mode(link_name) then
+  if verbose then
+    print("Removing "..link_name)
+  end
+  yorn, err_msg, err_code = os.remove(link_name)
+  if not yorn then
+    print("Cannot remove "..link_name, err_msg)
+    exit(err_code)
+  end
 end
 yorn, err_msg, err_code = lfs.link(destination,link_name,true)
 if not yorn then
@@ -94,8 +100,7 @@ end
 if verbose then
   print("Soft links available")
 end
-yorn, err_msg, err_code = lfs.attributes (link_name, "mode")
-if not yorn then
+if fs_mode(link_name) == nil then
   print("Soft link test: link error", err_msg)
   if not IS_UNIX then
     print("Sur Windows, vous devez d'abord activer le mode développeur")
@@ -181,11 +186,18 @@ if TEXMFHOME_ok then
   end
 end
 -- Configure MathDataBase
-os.remove(TEXMFHOME_tex_latex.."/MDB.cfg")
-if verbose then
-  print("Removed "..TEXMFHOME_tex_latex.."/MDB.cfg")
+local cfg_path = TEXMFHOME_tex_latex.."/MDB.cfg"
+if fs_mode(cfg_path) ~= nil then
+  yorn,err_msg,err_code = os.remove(cfg_path)
+  if not yorn then
+    print("Can't remove "..cfg_path, err_msg)
+    exit(err_code)
+  end
 end
-fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB.cfg","w"))
+if verbose then
+  print("Removed "..cfg_path)
+end
+fh = assert(io.open(cfg_path,"w"))
 s = [[
 %% MathDataBase configuration file: DO NOT EDIT
 {
@@ -195,12 +207,12 @@ s = [[
 fh:write(s:format(mdb_Style))
 fh:close()
 
-fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB.cfg","r"))
+fh = assert(io.open(cfg_path,"r"))
 s = fh:read("a")
 fh:close()
 assert(s:match("MathDataBase"))
 if verbose then
-  print("Created "..TEXMFHOME_tex_latex.."/MDB.cfg:")
+  print("Content of "..cfg_path..":")
   print(s)
 end
 fh = assert(io.open(mdb_Style.."/MathDataBase.sty","r"))
@@ -210,16 +222,23 @@ if not s:match("MathDataBase") then
   print("Échec: MathDataBase est corrompu")
   exit(1)
 end
-os.remove(TEXMFHOME_tex_latex.."/MDB")
-if verbose then
-  print("Removed "..TEXMFHOME_tex_latex.."/MDB")
+local mdb_path = TEXMFHOME_tex_latex.."/MDB"
+if fs_mode(mdb_path) ~= nil then
+  yorn,err_msg,err_code = os.remove(mdb_path)
+  if not yorn then
+    print("Can't remove "..mdb_path, err_msg)
+    exit(err_code)
+  end
+  if verbose then
+    print("Removed "..mdb_path)
+  end
 end
 _, err_msg, err_code = lfs.link(mdb_Style, TEXMFHOME_tex_latex.."/MDB", true)
 if err_msg ~= nil then
   print("Échec", err_msg)
   exit(err_code)
 end
-fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB/MathDataBase.sty","r"))
+fh = assert(io.open(mdb_path.."/MathDataBase.sty","r"))
 s = fh:read("a")
 fh:close()
 if s:len() == 0 then
@@ -227,7 +246,7 @@ if s:len() == 0 then
   exit(1)
 end
 if verbose then
-  print("Created link "..TEXMFHOME_tex_latex.."/MDB -> "..mdb_Style)
+  print("Created link "..mdb_path.." -> "..mdb_Style)
 end
 s = capture("kpsewhich MathDataBase.sty")
 if verbose then
