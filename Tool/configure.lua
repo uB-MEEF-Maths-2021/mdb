@@ -58,7 +58,15 @@ local function is_directory(path)
 end
 
 -- Test if we can make soft links
+-- create a temporary file as destination (required on windows)
 local destination = os.tmpname()
+local fh = assert(io.open(destination,"w"))
+local CONTENT = "REMOVE ME WHEN DONE"
+fh:write(CONTENT)
+fh:close()
+if verbose then
+  print("Fake destination created "..destination)
+end
 local err_msg, err_code
 _, err_msg, err_code = lfs.attributes (destination, "mode")
 if err_msg ~= nil then
@@ -93,6 +101,18 @@ if not yorn then
     print("Sur Windows, vous devez d'abord activer le mode développeur")
   end
   exit(err_code)
+end
+fh = assert(io.open(link_name,"r"))
+local s = fh:read("a")
+fh:close()
+assert(s==CONTENT)
+os.remove(link_name)
+if verbose then
+  print("Removed "..link_name)
+end
+os.remove(destination)
+if verbose then
+  print("Removed "..destination)
 end
 -- Where is the local texmf
 local HOME
@@ -165,8 +185,8 @@ os.remove(TEXMFHOME_tex_latex.."/MDB.cfg")
 if verbose then
   print("Removed "..TEXMFHOME_tex_latex.."/MDB.cfg")
 end
-local fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB.cfg","w"))
-local s = [[
+fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB.cfg","w"))
+s = [[
 %% MathDataBase configuration file: DO NOT EDIT
 {
   path={%s},
