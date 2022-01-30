@@ -31,9 +31,9 @@ Une fois le téléchargement effectué, placer le dossier `MathDataBase` à l'en
 
 ### sur Windows
 
-Sélectionner le dossier `Tool` puis clic droit et choisir "Ouvrir une fenêtre PowerShell ici". Entrer et valider l'instruction
+Sélectionner le dossier `Tool` puis clic droit et choisir "Ouvrir une fenêtre PowerShell ici" (avec la touche shift si nécessaire). Entrer et valider l'instruction
 ```
-texlua configuration.lua
+texlua configure.lua
 ```
 
 ### sur MacOS
@@ -42,13 +42,13 @@ Si ce n'est déjà fait, dans «Préférences système > Clavier > Raccourcis cl
 
 Sélectionner le dossier `Tool` puis clic droit et choisir "Nouveau terminal sur dossier". Entrer et valider l'instruction
 ```
-texlua configuration.lua
+texlua configure.lua
 ```
 ### Sur unix/linux
 
 Sélectionner le dossier `Tool` puis clic droit et choisir "Ouvrir un terminal ici" (ou similaire). Entrer et valider l'instruction
 ```
-texlua configuration.lua
+texlua configure.lua
 ```
 
 ## Configuration technique

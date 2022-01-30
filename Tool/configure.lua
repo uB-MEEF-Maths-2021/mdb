@@ -66,13 +66,17 @@ if err_msg ~= nil then
   exit(err_code)
 end
 local link_name = os.tmpname()
-_, err_msg, err_code = os.remove(link_name)
-if err_msg ~= nil then
-  print("Cannot remove a temporary file", err_msg)
+if verbose then
+  print("Removing "..link_name)
+end
+local yorn
+yorn, err_msg, err_code = os.remove(link_name)
+if not yorn then
+  print("Cannot remove "..link_name, err_msg)
   exit(err_code)
 end
-_, err_msg, err_code = lfs.link(destination,link_name,true)
-if err_msg ~= nil then
+yorn, err_msg, err_code = lfs.link(destination,link_name,true)
+if not yorn then
   print("Soft link test: link error", err_msg)
   if not IS_UNIX then
     print("Sur Windows, vous devez d'abord activer le mode développeur")
@@ -82,8 +86,8 @@ end
 if verbose then
   print("Soft links available")
 end
-_, err_msg, err_code = lfs.attributes (link_name, "mode")
-if err_msg ~= nil then
+yorn, err_msg, err_code = lfs.attributes (link_name, "mode")
+if not yorn then
   print("Soft link test: link error", err_msg)
   if not IS_UNIX then
     print("Sur Windows, vous devez d'abord activer le mode développeur")
