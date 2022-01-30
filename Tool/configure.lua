@@ -4,12 +4,32 @@ local lfs = require("lfs")
 local os = require("os")
 local io = require("io")
 
-local IS_UNIX  = os["type"] == "unix"
+local OS_TYPE = os["type"]
+local OS_NAME = os["name"]
+local IS_UNIX  = OS_TYPE == "unix"
 
+local VERSION = "1.0"
 local print = print
 local exit = os.exit
 
 local __FILE__ = arg[0]
+
+local i = 1
+local verbose = false
+
+for _,r in ipairs(arg) do
+  if r == "--verbose" then
+    verbose = true
+  elseif r == "-v" then
+    verbose = true
+  end
+end
+print("MathDataBase configure tool v"..VERSION)
+if verbose then
+  s = "Host operating system: %s (%s)"
+  print(s:format(OS_TYPE, OS_NAME))
+end
+
 local mdb_Tool, mdb_root, mdb_Style
 mdb_Tool = __FILE__:match(IS_UNIX and "(.*)/" or "(.*)[/\\]")
 if mdb_Tool == nil then
@@ -27,6 +47,10 @@ else
 end
 mdb_root = mdb_Tool:match(IS_UNIX and "(.*)/" or "(.*)[/\\]")
 mdb_Style = mdb_root .."/Style"
+if verbose then
+  s = "MathDataBase location: %s"
+  print(s:format(mdb_root))
+end
 
 local function is_directory(path)
   local mode,err_msg,err_code = lfs.attributes (path, "mode")
@@ -55,6 +79,9 @@ if err_msg ~= nil then
   end
   exit(err_code)
 end
+if verbose then
+  print("Soft links available")
+end
 _, err_msg, err_code = lfs.attributes (link_name, "mode")
 if err_msg ~= nil then
   print("Soft link test: link error", err_msg)
@@ -70,6 +97,9 @@ if IS_UNIX then
 else
   HOME = os.getenv("HOMEDRIVE")..os.getenv("HOMEPATH")
 end
+if verbose then
+  print("HOME: "..HOME)
+end
 local function capture(cmd)
   local f = assert(io.popen(cmd,'r'))
   local s = assert(f:read('a'))
@@ -81,7 +111,7 @@ local TEXMFHOME_ok = is_directory(TEXMFHOME)
 if not TEXMFHOME_ok then
   local dir = TEXMFHOME:match(".*/")
   if dir then
-    TEXMFHOME_ok = is_directory(dir) and lfs.mkdir(TEXMFHOME)
+    TEXMFHOME_ok = is_directory(dir) or lfs.mkdir(TEXMFHOME)
   else
     print("Votre dossier texmf personnel ne semble pas configuré")
     if not IS_UNIX then
@@ -110,6 +140,9 @@ if not TEXMFHOME_ok then
     end
   end
 end
+if verbose then
+  print("Personal texmf tree: ".. TEXMFHOME)
+end
 TEXMFHOME_tex = TEXMFHOME.."/tex"
 TEXMFHOME_tex_latex = TEXMFHOME_tex.."/latex"
 if TEXMFHOME_ok then
@@ -125,6 +158,9 @@ if TEXMFHOME_ok then
 end
 -- Configure MathDataBase
 os.remove(TEXMFHOME_tex_latex.."/MDB.cfg")
+if verbose then
+  print("Removed "..TEXMFHOME_tex_latex.."/MDB.cfg")
+end
 local fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB.cfg","w"))
 local s = [[
 %% MathDataBase configuration file: DO NOT EDIT
@@ -139,7 +175,10 @@ fh = assert(io.open(TEXMFHOME_tex_latex.."/MDB.cfg","r"))
 s = fh:read("a")
 fh:close()
 assert(s:match("MathDataBase"))
-
+if verbose then
+  print("Created "..TEXMFHOME_tex_latex.."/MDB.cfg:")
+  print(s)
+end
 fh = assert(io.open(mdb_Style.."/MathDataBase.sty","r"))
 s = fh:read("a")
 fh:close()
@@ -148,6 +187,9 @@ if not s:match("MathDataBase") then
   exit(1)
 end
 os.remove(TEXMFHOME_tex_latex.."/MDB")
+if verbose then
+  print("Removed "..TEXMFHOME_tex_latex.."/MDB")
+end
 _, err_msg, err_code = lfs.link(mdb_Style, TEXMFHOME_tex_latex.."/MDB", true)
 if err_msg ~= nil then
   print("Échec", err_msg)
@@ -160,7 +202,13 @@ if s:len() == 0 then
   print("Échec")
   exit(1)
 end
+if verbose then
+  print("Created link "..TEXMFHOME_tex_latex.."/MDB -> "..mdb_Style)
+end
 s = capture("kpsewhich MathDataBase.sty")
+if verbose then
+  print("kpsewhich MathDataBase.sty: "..s)
+end
 if s:match("MathDataBase.sty") then
   print([[
 Configuration réussie: vous pouvez utiliser
