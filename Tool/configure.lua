@@ -177,8 +177,23 @@ local mdb_path = TEXMFHOME_tex_latex.."/MDB"
 if fs_mode(mdb_path) ~= nil then
   yorn,err_msg,err_code = os.remove(mdb_path)
   if not yorn then
-    print("Can't remove "..mdb_path, err_msg)
-    exit(err_code)
+    if IS_UNIX then
+      print("Can't remove "..mdb_path, err_msg)
+      exit(err_code)
+    else
+      local cmd = [[del "%s"]]
+      cmd = cmd:format(mdb_path)
+      if verbose then
+        print("Executing: "..cmd)
+      end
+      execute(cmd)
+      if fs_mode(mdb_path) ~= nil then
+        s = [[
+Please remove file at: %s
+once done, press return to continue]]
+        print(s:format(mdb_path))
+      end
+    end
   end
   if verbose then
     print("Removed "..mdb_path)
