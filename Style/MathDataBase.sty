@@ -53,10 +53,10 @@ end
 }
 \NewDocumentCommand \MDBConfigure { m } {
   \keys_set:nn { MathDataBase } { #1 }
-  \tl_set:Nx \MDBStyleDir { \MDBRootDir Style / }
+  \tl_set:Nx \MDBStyleDir { \MDBRootDir / Style / }
   \group_begin:
   \file_get:nnNTF {
-    \MDBRootDir \MDBLanguage / content.tex
+    \MDBRootDir / \MDBLanguage / content.tex
   } {} \l_tmpa_tl {
     \regex_replace_once:nnN {
       \s+ (?: \c{ endinput } .* )? $
@@ -73,7 +73,7 @@ end
       \prop_gset_from_keyval:Nn \g_MDB_authors_prop \l_tmpa_tl
     }
   } {
-    \PackageError{MathDataBase}{No~proper~\MDBRootDir \MDBLanguage / content.tex}
+    \PackageError{MathDataBase}{No~proper~\MDBRootDir/ \MDBLanguage / content.tex}
     \group_end:
   }
 }
@@ -85,7 +85,7 @@ end
 \tl_new:N \MDBCategoryName
 \NewDocumentCommand\MDBCategoryRead { m } {
   \group_begin:
-  \file_get:nnNTF { \MDBRootDir \MDBLanguage / #1 / content.tex} {} \l_tmpa_tl {
+  \file_get:nnNTF { \MDBRootDir / \MDBLanguage / #1 / content.tex} {} \l_tmpa_tl {
     \regex_replace_once:nnN { \s+ (?: \c{ endinput } .* )? $ } {} \l_tmpa_tl
     \tl_set:Nn \l_tmpb_tl {
       \prop_set_from_keyval:Nn \g_MDB_category_prop
@@ -109,7 +109,7 @@ end
     \tl_clear:N \MDBVariantName
     \prop_clear:N \g_MDB_variant_prop
   } {
-    \PackageError{MathDataBase}{No~proper~file~named:~#1}
+    \PackageError{MathDataBase}{No~proper~file~named:~\MDBRootDir / \MDBLanguage / #1 / content.tex}
     \group_end:
   }
   \ignorespaces
@@ -196,7 +196,7 @@ end
 \tl_new:N \MDBVariantName
 \NewDocumentCommand\MDBContentRead { m } {
   \group_begin:
-  \file_get:nnNTF { \MDBRootDir \MDBLanguage / \MDBCategoryName / Content / #1} {} \l_tmpa_tl {
+  \file_get:nnNTF { \MDBRootDir / \MDBLanguage / \MDBCategoryName / Content / #1} {} \l_tmpa_tl {
     \regex_replace_once:nnN { \s+ (?: \c{ endinput } .* )? $ } {} \l_tmpa_tl
     \exp_last_unbraced:NNNV
     \group_end:
@@ -205,7 +205,7 @@ end
     \prop_clear:N \g_MDB_variant_prop
     \tl_clear:N \MDBVariantName
   } {
-    \PackageError{MathDataBase}{No~proper~category/content~pair:^^J\MDBRootDir \MDBLanguage / \MDBCategoryName / Content / #1}
+    \PackageError{MathDataBase}{No~proper~category/content~pair:^^J\MDBRootDir / \MDBLanguage / \MDBCategoryName / Content / #1}
     \group_end:
   }
   \ignorespaces
@@ -219,7 +219,7 @@ end
     \prop_set_from_keyval:Nn \g_MDB_variant_prop \l_tmpa_tl
     \tl_set:Nn \MDBVariantName { #1 }
   } {
-    \PackageError{MathDataBase}{No~#1~variant~in:^^J\MDBRootDir \MDBLanguage / \MDBCategoryName / Content / \MDBContentName}
+    \PackageError{MathDataBase}{No~#1~variant~in:^^J\MDBRootDir / \MDBLanguage / \MDBCategoryName / Content / \MDBContentName}
     \group_end:
   }
   \ignorespaces
@@ -328,6 +328,6 @@ end
 
 \ExplSyntaxOff
 
-\AtBeginDocument{\input{MDB.cfg}}
+\input{MDB.cfg}
 
 \endinput

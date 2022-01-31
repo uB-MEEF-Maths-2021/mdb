@@ -152,7 +152,7 @@ local fh = assert(io.open(cfg_path,"w"))
 local s = [[
 %% MathDataBase configuration file: DO NOT EDIT
 \MDBConfigure {
-  path={%s},
+  path={%s/},
 }
 ]]
 fh:write(s:format(mdb_root))
