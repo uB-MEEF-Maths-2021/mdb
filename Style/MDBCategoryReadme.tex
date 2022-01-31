@@ -164,5 +164,24 @@
   \string\MDBAuthor\{status\}=\MDBAuthor{status}
   \end{tcolorbox}
 }
+\section{Usage}
+\begin{verbatim}
+\MDB{<path>}
+\end{verbatim}
+\texttt{<path>}: \texttt{Polynômes/exo7/base/text},...
+\begin{verbatim}
+\MDB[
+  meta={
+    <key1>=<value1>,
+    <key2>=<value2>,
+    ...
+  },
+]{<path>}
+\end{verbatim}
+Formal replacement:
+\begin{description}
+\item \texttt{\backslash MDBMeta{<key1>}} $⟶$ \texttt{<value1>}
+\item \texttt{\backslash MDBMeta{<key2>}} $⟶$ \texttt{<value2>}
+\end{description}
 \printindex
 \end{document}
