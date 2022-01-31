@@ -1,5 +1,20 @@
 % !TEX encoding = UTF-8
 % !TEX program = lualatex
 
+\AtEndDocument {
+\section{Example}
+\begin{itemize}
+\item
+No replacement:\\
+\texttt{\backslash MDB\{Polynômes/racine/base/text\}}
+\\
+``\MDB{Polynômes/racine/base/text}''
+\item
+Replacement r $⟶$ R, P $⟶$ p:\\
+\texttt{\backslash MDB[r = R, P = p,]\{Polynômes/racine/base/text\}}
+\\
+``\MDB[r = R, P = p,]{Polynômes/racine/base/text}''
+\end{itemize}
+}
 \newcommand\MDBCategory{Polynômes}
-\input{../../Style/MDBCategoryReadme}
+\input{../../Template/MDBCategoryReadme}
