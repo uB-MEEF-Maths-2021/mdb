@@ -155,7 +155,11 @@ local s = [[
   path={%s/},
 }
 ]]
-fh:write(s:format(mdb_root))
+if IS_UNIX then
+  fh:write(s:format(mdb_root))
+else
+  fh:write(s:format(mdb_root:gsub("\\","/")))
+end
 fh:close()
 
 fh = assert(io.open(cfg_path,"r"))
