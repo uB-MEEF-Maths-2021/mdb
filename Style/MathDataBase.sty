@@ -8,6 +8,16 @@
   {0.2}
   {MathDataBase main package}
 
+\NeedsTeXFormat{LaTeX2e}
+\msg_new:nnn { inline } { :n } { #1 }
+\cs_if_exist:NTF\IfFormatAtLeastTF {
+  \IfFormatAtLeastTF{2021/06/01} {} {
+    \msg_fatal:nnn { inline } { :n } { Please~update~LaTeX.~Emergency~stop }
+  }
+} {
+  \msg_fatal:nnn { inline } { :n } { Please~update~LaTeX.~Emergency~stop }
+}
+    
 \ExplSyntaxOff
 
 \RequirePackage{luacode}
